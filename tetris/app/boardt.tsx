@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react";
-import colors from "../public/assets/colors.json";
+import figures from "../public/assets/figures.json";
 import {Matrix} from "../public/assets/structures";
 
 
@@ -24,7 +24,7 @@ export default function Boardt(matrix: Matrix) {
     //bg-[#f3ffd2] bg-[#011627]
     return <>
       <div className={`w-96 h-80vh grid grid-cols-10 grid-rows-20 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
-        {final_values.map((value,key) => <div className={`bg-[${colors.piece_colors[value].color}]`} key={key}></div>)}
+        {final_values.map((value,key) => <div className={`bg-[${figures.inf[value].color}]`} key={key}></div>)}
       </div>
     </>
   }
