@@ -8,7 +8,7 @@ export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
   const [matrix,setmatrix] = useState<number[][]>([]);
-  const [pointer,setpointer]= useState<Pointer>({value:null});
+  const [pointer,setpointer]= useState<Pointer | null>(null);
   const buttonref = useRef<HTMLButtonElement>(null);
   
   //this one will happen only once
@@ -43,9 +43,34 @@ export default function Page() {
     // 'X' ARE GOING TO BE THE ROWS AND 'Y' THE COLUMNS (Ik it doesn't make sense but it was the way I saw it)
     setTimeout(()=>{
       if(matrix.length != 0){
-        let temp_matrix:number[][]=matrix;
-        if(pointer.value){
-          //if the next move is not out of the matrix:........
+
+        let temp_matrix:number[][]=[...matrix];
+
+        if(pointer?.value){
+          let out_matrix:boolean= false;
+          //the figure will be empty for a while
+          for (let i = 0; i < 4; i++) {
+            temp_matrix[pointer.value[i].x][pointer.value[i].y]=0;
+          }
+          for (let i = 0; i < 4; i++) {
+            if (pointer.value[i].x+1 >=20 || temp_matrix[pointer.value[i].x+1][pointer.value[i].y] !== 0) {
+              out_matrix=true;
+              break;
+            }
+          }
+          if(!out_matrix){
+            //update the pointer
+            let temp_pointer =pointer.value;
+            for (let i = 0; i < 4; i++) {
+              temp_pointer[i].x=temp_pointer[i].x+1;
+              temp_matrix[temp_pointer[i].x][temp_pointer[i].y]=pointer.index;
+            }
+            setpointer({value:temp_pointer,index:pointer.index});
+          }
+          else{
+            //restart
+            setpointer(null);
+          }
           
         }else{//In case there's the need for a new figure
             //random figure selector algorithm
@@ -53,11 +78,13 @@ export default function Page() {
             for (let i = 0; i < 4; i++) {
               let x =figures.inf[index_figure].positions[i].x;
               let y =figures.inf[index_figure].positions[i].y;
-              temp_matrix[x][y]=1;
-              setpointer({value:figures.inf[6].positions});
-          
+              temp_matrix[x][y]=index_figure;
+              setpointer({value:figures.inf[index_figure].positions,index:index_figure});
           }
+          setmatrix(temp_matrix);
         }
+
+        setcounter(counter+1);
       }
 
      

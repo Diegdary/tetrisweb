@@ -3,5 +3,6 @@ export interface Matrix  {
   }
 
 export interface Pointer{
-    value: {x:number, y:number}[] | null
+    value: {x:number, y:number}[] | null,
+    index: number
 }
