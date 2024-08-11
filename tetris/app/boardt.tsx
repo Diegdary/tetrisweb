@@ -21,7 +21,7 @@ export default function Boardt(matrix: Matrix) {
     },[matrix]);
     
     
-    //bg-[#f3ffd2] bg-[#011627]
+    //bg-[#f3ffd2] bg-[#011627] bg-[#750e49] bg-[#82BDA7] bg-[#750e49] bg-[#82BDA7] bg-[#6E837C] bg-[#b8d9c8]
     return <>
       <div className={`w-96 h-80vh grid grid-cols-10 grid-rows-20 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
         {final_values.map((value,key) => <div className={`bg-[${figures.inf[value].color}]`} key={key}></div>)}

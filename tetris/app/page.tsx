@@ -44,7 +44,7 @@ export default function Page() {
     setTimeout(()=>{
       if(matrix.length != 0){
 
-        let temp_matrix:number[][]=[...matrix];
+        let temp_matrix:number[][]=JSON.parse(JSON.stringify(matrix));
 
         if(pointer?.value){
           let out_matrix:boolean= false;
@@ -66,6 +66,7 @@ export default function Page() {
               temp_matrix[temp_pointer[i].x][temp_pointer[i].y]=pointer.index;
             }
             setpointer({value:temp_pointer,index:pointer.index});
+            setmatrix(temp_matrix);
           }
           else{
             //restart
@@ -76,10 +77,11 @@ export default function Page() {
             //random figure selector algorithm
             let index_figure=Math.floor(Math.random()*7+1);
             for (let i = 0; i < 4; i++) {
-              let x =figures.inf[index_figure].positions[i].x;
-              let y =figures.inf[index_figure].positions[i].y;
+              const x =figures.inf[index_figure].positions[i].x;
+              const y =figures.inf[index_figure].positions[i].y;
+              const positions = JSON.parse(JSON.stringify(figures.inf[index_figure].positions));
               temp_matrix[x][y]=index_figure;
-              setpointer({value:figures.inf[index_figure].positions,index:index_figure});
+              setpointer({value:positions,index:index_figure});
           }
           setmatrix(temp_matrix);
         }
