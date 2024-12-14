@@ -1,9 +1,9 @@
 import { useEffect, useState} from "react";
 import figures from "../public/assets/figures.json";
-import {Matrix} from "../public/assets/structures";
+import {Board} from "../public/assets/structures";
 
 
-export default function Boardt(matrix: Matrix) {
+export default function Boardt(matrix: Board) {
     //PROBABLEMENTE SE NECESITE UN USEFFECT AQUI
     const [final_values, setfinal_values]=useState<number[]>([]);
     useEffect(()=>{
@@ -20,7 +20,7 @@ export default function Boardt(matrix: Matrix) {
       
     },[matrix]);
     
-    
+    //DO NOT DELETE
     //bg-[#f3ffd2] bg-[#011627] bg-[#750e49] bg-[#82BDA7] bg-[#750e49] bg-[#82BDA7] bg-[#6E837C] bg-[#b8d9c8]
     return <>
       <div className={`w-96 h-80vh grid grid-cols-10 grid-rows-20 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
