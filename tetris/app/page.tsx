@@ -20,6 +20,7 @@ export default function Page() {
          // debugger
           let temp_board:Board =JSON.parse(JSON.stringify(last));
           if(keypressed == "ArrowLeft"){
+            
             console.log("jiji");
             let out_matrix:boolean = false;
             for (let i = 0; i < 4; i++) {
@@ -68,7 +69,6 @@ export default function Page() {
             }
           }
         }
-        
         return last;
       })
   }
