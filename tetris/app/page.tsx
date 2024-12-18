@@ -16,9 +16,9 @@ export default function Page() {
     const keypressed:string =e.key;
       console.log(keypressed)
       setboard(last => {
+        let temp_board:Board =JSON.parse(JSON.stringify(last));
         if(last.matrix.length != 0 && last.pointer?.value){//could try deleting ".value" and it could still work
          // debugger
-          let temp_board:Board =JSON.parse(JSON.stringify(last));
           if(keypressed == "ArrowLeft"){
             
             console.log("jiji");
@@ -68,8 +68,15 @@ export default function Page() {
               return temp_board;
             }
           }
+
+          for (let i = 0; i < 4; i++) {
+            temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = board.pointer!.index;
+          }
+
         }
-        return last;
+        // refill the original matrix in case nothing has to happen (if I return the same value as before, react does unpredictable cases)
+        
+        return temp_board;
       })
   }
 
