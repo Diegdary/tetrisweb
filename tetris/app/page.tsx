@@ -18,10 +18,8 @@ export default function Page() {
       setboard(last => {
         let temp_board:Board =JSON.parse(JSON.stringify(last));
         if(last.matrix.length != 0 && last.pointer?.value){//could try deleting ".value" and it could still work
-         // debugger
           if(keypressed == "ArrowLeft"){
             
-            console.log("jiji");
             let out_matrix:boolean = false;
             for (let i = 0; i < 4; i++) {
               temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
@@ -45,7 +43,6 @@ export default function Page() {
             }
           }
           if(keypressed == "ArrowRight"){
-            console.log("jiji");
             let out_matrix:boolean = false;
             for (let i = 0; i < 4; i++) {
               temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
@@ -68,13 +65,246 @@ export default function Page() {
               return temp_board;
             }
           }
+          // right rotation
+          if(keypressed == "x"){
+            const getNextPosition = (obj:{x:number,y:number}) => {
+              const middle_x:number = temp_board.pointer!.value[0].x;
+              const middle_y:number = temp_board.pointer!.value[0].y;
+              for (let i = 0; i < 2; i++) {
+                if (obj.x < middle_x && obj.y <= middle_y) {//right
+                  obj.y= obj.y+1
+                  continue;
+                }
+                if (obj.x <= middle_x && obj.y > middle_y) {//down
+                  obj.x= obj.x+1
+                  continue;
+                }
+                if(obj.x > middle_x && obj.y >= middle_y){//left
+                  obj.y= obj.y-1
+                  continue;
+                }
+                //up
+                obj.x= obj.x-1
+              }
+              return obj;
+            };
+            //debugger
+            let out_matrix:boolean = false;
+            for (let i = 1; i < 4; i++) {
+              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+            }
+            //double step rotation pattern case
+            if (temp_board.pointer!.index > 1 && temp_board.pointer!.index < 7) {
+              for (let i = 1; i < 4; i++) {
+                const x =temp_board.pointer!.value[i].x; 
+                const y =temp_board.pointer!.value[i].y;
+                const nextP= getNextPosition({x,y});
+                //debugger
+                if ((nextP.x < 0 || nextP.x > 19) || (nextP.y < 0 || nextP.y > 9) || temp_board.matrix[nextP.x][nextP.y] != 0) {
+                  out_matrix = true;
+                  break;
+                }
+              }
+              if (!out_matrix) {
+                for (let i = 1; i < 4; i++) {
+                  const x =temp_board.pointer!.value[i].x; 
+                  const y =temp_board.pointer!.value[i].y;
+                  const nextP= getNextPosition({x,y});
+                  temp_board.pointer!.value[i].x=nextP.x
+                  temp_board.pointer!.value[i].y=nextP.y
+                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer!.index
+                  
+                }
+                return temp_board;
+              }
+            }
+            if(temp_board.pointer!.index == 7){
+
+              if (temp_board.pointer!.value[0].y+1 == temp_board.pointer!.value[1].y) {//acostada
+                for (let i = 0; i < 4; i++) {
+                  const x = temp_board.pointer!.value[i].x;
+                  const y = temp_board.pointer!.value[i].y;
+                  temp_board.matrix[x][y] = 0;
+                }
+                let out_matrix = false;
+                  const startingP = temp_board.pointer!.value[0].x-2;
+                  const limit = temp_board.pointer!.value[0].x + 2;
+                  for (let i = startingP; i < limit; i++) {
+                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer!.value[1].y] != 0){
+                    out_matrix = true
+                    break;
+                  }
+                  
+                }
+                if (!out_matrix) {
+                  let counter = 0;
+                  
+                  const startingP = temp_board.pointer!.value[0].x-2;
+                  const limit = temp_board.pointer!.value[0].x + 2;
+                  for (let i = startingP; i < limit; i++) {
+                    temp_board.pointer!.value[counter].x= i;
+                    temp_board.pointer!.value[counter].y= temp_board.pointer!.value[1].y;
+                    temp_board.matrix[i][temp_board.pointer!.value[1].y] = temp_board.pointer!.index
+                    counter++;
+                  }
+                  return temp_board;
+                }
+              }
+              else{//levantada
+                for (let i = 0; i < 4; i++) {
+                  const x = temp_board.pointer!.value[i].x;
+                  const y = temp_board.pointer!.value[i].y;
+                  temp_board.matrix[x][y] = 0;
+                }
+                let out_matrix = false;
+                  const startingP = temp_board.pointer!.value[2].y-1;
+                  const limit = temp_board.pointer!.value[2].y + 3;
+                  for (let i = startingP; i < limit; i++) {
+                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer!.value[2].x][i] != 0){
+                    out_matrix = true
+                    break;
+                  }
+                  
+                }
+                if (!out_matrix) {
+                  let counter = 0;
+                  
+                  const startingP = temp_board.pointer!.value[2].y-1;
+                  const limit = temp_board.pointer!.value[2].y + 3;
+                  for (let i = startingP; i < limit; i++) {
+                    temp_board.pointer!.value[counter].x= temp_board.pointer!.value[2].x;
+                    temp_board.pointer!.value[counter].y= i;
+                    temp_board.matrix[temp_board.pointer!.value[2].x][i] = temp_board.pointer!.index
+                    counter++;
+                  }
+                  return temp_board;
+                }
+              }
+            }
+            
+          }
+
+          if(keypressed == "z"){
+            const getNextPosition = (obj:{x:number,y:number}) => {
+              const middle_x:number = temp_board.pointer!.value[0].x;
+              const middle_y:number = temp_board.pointer!.value[0].y;
+              for (let i = 0; i < 2; i++) {
+                if (obj.x > middle_x && obj.y <= middle_y) {//right
+                  obj.y= obj.y+1
+                  continue;
+                }
+                if (obj.x <= middle_x && obj.y < middle_y) {//down
+                  obj.x= obj.x+1
+                  continue;
+                }
+                if(obj.x < middle_x && obj.y >= middle_y){//left
+                  obj.y= obj.y-1
+                  continue;
+                }
+                //up
+                obj.x= obj.x-1
+              }
+              return obj;
+            };
+            let out_matrix:boolean = false;
+            for (let i = 1; i < 4; i++) {
+              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+            }
+            //double step rotation pattern case
+            if (temp_board.pointer!.index > 1 && temp_board.pointer!.index < 7) {
+              for (let i = 1; i < 4; i++) {
+                const x =temp_board.pointer!.value[i].x; 
+                const y =temp_board.pointer!.value[i].y;
+                const nextP= getNextPosition({x,y});
+                if ((nextP.x < 0 || nextP.x > 19) || (nextP.y < 0 || nextP.y > 9) || temp_board.matrix[nextP.x][nextP.y] != 0) {
+                  out_matrix = true;
+                }
+              }
+              if (!out_matrix) {
+                for (let i = 1; i < 4; i++) {
+                  const x =temp_board.pointer!.value[i].x; 
+                  const y =temp_board.pointer!.value[i].y;
+                  const nextP= getNextPosition({x,y});
+                  temp_board.pointer!.value[i].x=nextP.x
+                  temp_board.pointer!.value[i].y=nextP.y
+                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer!.index
+                  
+                }
+                return temp_board;
+              }
+            }
+            if(temp_board.pointer!.index == 7){
+
+              if (temp_board.pointer!.value[0].y+1 == temp_board.pointer!.value[1].y) {//acostada
+                for (let i = 0; i < 4; i++) {
+                  const x = temp_board.pointer!.value[i].x;
+                  const y = temp_board.pointer!.value[i].y;
+                  temp_board.matrix[x][y] = 0;
+                }
+                let out_matrix = false;
+                  const startingP = temp_board.pointer!.value[0].x-2;
+                  const limit = temp_board.pointer!.value[0].x + 2;
+                  for (let i = startingP; i < limit; i++) {
+                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer!.value[1].y] != 0){
+                    out_matrix = true
+                    break;
+                  }
+                  
+                }
+                if (!out_matrix) {
+                  let counter = 0;
+                  
+                  const startingP = temp_board.pointer!.value[0].x-2;
+                  const limit = temp_board.pointer!.value[0].x + 2;
+                  for (let i = startingP; i < limit; i++) {
+                    temp_board.pointer!.value[counter].x= i;
+                    temp_board.pointer!.value[counter].y= temp_board.pointer!.value[1].y;
+                    temp_board.matrix[i][temp_board.pointer!.value[1].y] = temp_board.pointer!.index
+                    counter++;
+                  }
+                  return temp_board;
+                }
+              }
+              else{//levantada
+                for (let i = 0; i < 4; i++) {
+                  const x = temp_board.pointer!.value[i].x;
+                  const y = temp_board.pointer!.value[i].y;
+                  temp_board.matrix[x][y] = 0;
+                }
+                let out_matrix = false;
+                  const startingP = temp_board.pointer!.value[2].y-1;
+                  const limit = temp_board.pointer!.value[2].y + 3;
+                  for (let i = startingP; i < limit; i++) {
+                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer!.value[2].x][i] != 0){
+                    out_matrix = true
+                    break;
+                  }
+                  
+                }
+                if (!out_matrix) {
+                  let counter = 0;
+                  
+                  const startingP = temp_board.pointer!.value[2].y-1;
+                  const limit = temp_board.pointer!.value[2].y + 3;
+                  for (let i = startingP; i < limit; i++) {
+                    temp_board.pointer!.value[counter].x= temp_board.pointer!.value[2].x;
+                    temp_board.pointer!.value[counter].y= i;
+                    temp_board.matrix[temp_board.pointer!.value[2].x][i] = temp_board.pointer!.index
+                    counter++;
+                  }
+                  return temp_board;
+                }
+              }
+            }
+            
+          }
 
           for (let i = 0; i < 4; i++) {
             temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = board.pointer!.index;
           }
 
         }
-        // refill the original matrix in case nothing has to happen (if I return the same value as before, react does unpredictable cases)
+        // refill the original matrix in case nothing has to happen (if I return the same value as before, react does unpredictable scenarios)
         
         return temp_board;
       })
