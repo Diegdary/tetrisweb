@@ -361,16 +361,45 @@ export default function Page() {
                 temp_board.pointer.value[i].x=temp_board.pointer.value[i].x+1;
                 temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index;
               }
-              //DELETE LATER
-              //setpointer({value:temp_pointer,index:pointer.index});
-              //setmatrix(temp_matrix);
+
               setcounter(last => last + 1);
               return temp_board;
             }
             else{
+              let rows_burned =0;
+              for (let i = 0; i < 4; i++) {
+                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index;
+              }
+              //deleting completed rows!
+              //debugger
+              
+              for (let i = 0; i < 4; i++) {
+                let gap:boolean = false;
+                const row:number= temp_board.pointer.value[i].x;
+                for (let j = 0; j < 10; j++) {
+                  if (temp_board.matrix[row][j] == 0) {
+                    gap= true;
+                    break;
+                  }
+                }
+                if (!gap) {
+                  rows_burned++;
+                  for (let temp_i = row; temp_i > 0; temp_i--) {
+                    for (let temp_j = 0; temp_j < 10; temp_j++) {
+                     temp_board.matrix[temp_i][temp_j] = temp_board.matrix[temp_i-1][temp_j];
+                    }
+                  }
+                  
+                }
+              }
+              // filling first row 
+              for (let temp_i = 0; temp_i < 10; temp_i++) {
+                temp_board.matrix[0][temp_i] = 0;
+              }
+              
               //restart
                 setcounter(last => last + 1);
-                return {matrix:lastBoard.matrix,pointer:null}
+                return {matrix:temp_board.matrix,pointer:null}
               
             }
             
@@ -404,7 +433,7 @@ export default function Page() {
 
 
 
-  return <div tabIndex={0} onKeyDown={(e)=>{keyeventhandler(e)}}>
+  return <div tabIndex={0} className="focus:outline-none" onKeyDown={(e)=>{keyeventhandler(e)}}>
               <h1 className="text-red-600	">Hello, Next.js!</h1>
               <p>contador: {counter}</p>
               <p>velocidad: {speed}</p>
