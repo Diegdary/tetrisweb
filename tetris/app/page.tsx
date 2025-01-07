@@ -4,6 +4,7 @@ import Boardt from "./boardt";
 import figures from "../public/assets/figures.json";
 import { Board } from "../public/assets/structures";
 
+
 export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
@@ -325,8 +326,8 @@ export default function Page() {
   },[]);  
   
   const increaseSpeed = ():void => {
-      if(speed>250){
-        setspeed(speed-250);
+      if(speed>125){
+        setspeed(last => last/2);
       }
       else{
         if(buttonref.current){
@@ -371,11 +372,11 @@ export default function Page() {
                 temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index;
               }
               //deleting completed rows!
-              //debugger
-              
-              for (let i = 0; i < 4; i++) {
+              const sortedlist = temp_board.pointer.value.map(e => e.x).sort();
+              const setlist = new Set(sortedlist);
+
+              for (const row of setlist) {
                 let gap:boolean = false;
-                const row:number= temp_board.pointer.value[i].x;
                 for (let j = 0; j < 10; j++) {
                   if (temp_board.matrix[row][j] == 0) {
                     gap= true;
@@ -386,17 +387,17 @@ export default function Page() {
                   rows_burned++;
                   for (let temp_i = row; temp_i > 0; temp_i--) {
                     for (let temp_j = 0; temp_j < 10; temp_j++) {
-                     temp_board.matrix[temp_i][temp_j] = temp_board.matrix[temp_i-1][temp_j];
+                      temp_board.matrix[temp_i][temp_j] = temp_board.matrix[temp_i - 1][temp_j];
                     }
                   }
-                  
+                  // filling first row 
+                  for (let temp_i = 0; temp_i < 10; temp_i++) {
+                    temp_board.matrix[0][temp_i] = 0;
+                  }
                 }
               }
-              // filling first row 
-              for (let temp_i = 0; temp_i < 10; temp_i++) {
-                temp_board.matrix[0][temp_i] = 0;
-              }
-              
+
+
               //restart
                 setcounter(last => last + 1);
                 return {matrix:temp_board.matrix,pointer:null}
@@ -434,6 +435,7 @@ export default function Page() {
 
 
   return <div tabIndex={0} className="focus:outline-none" onKeyDown={(e)=>{keyeventhandler(e)}}>
+              
               <h1 className="text-red-600	">Hello, Next.js!</h1>
               <p>contador: {counter}</p>
               <p>velocidad: {speed}</p>

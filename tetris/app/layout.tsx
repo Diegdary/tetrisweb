@@ -1,4 +1,10 @@
 import './globals.css'
+import { Metadata } from "next";
+
+export const metadata:Metadata ={
+  title:"Matrix Tetris",
+  description:"Tetris made with react, typescript, next.js by using a two-dimensional list and playing with its values. No canvas used"
+}
 
 
 export default function RootLayout({
