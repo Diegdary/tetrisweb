@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import Boardt from "./boardt";
 import figures from "../public/assets/figures.json";
 import { Board } from "../public/assets/structures";
+import Menu from "./menu";
 
 
 export default function Page() {
@@ -11,11 +12,34 @@ export default function Page() {
   const [board,setboard] = useState<Board>({matrix:[],pointer:null});
   const buttonref = useRef<HTMLButtonElement>(null);
 
+  //this one will happen only once
+  useEffect(()=>{
+    let temp_matrix:number[][]= [];
+    for (let i = 0; i < 20; i++) {
+      temp_matrix.push([]);
+      for (let j = 0; j < 10; j++) {
+        temp_matrix[i][j]=0;
+      }
+    }
+
+    setboard({matrix:temp_matrix,pointer:null});
+    setcounter(last => last + 1);
+  },[]);  
+  
+  const increaseSpeed = ():void => {
+      if(speed>125){
+        setspeed(last => last/2);
+      }
+      else{
+        if(buttonref.current){
+          buttonref.current.innerHTML="Too much speed!!";
+        }
+      }
+  }
 
   const keyeventhandler = (e:React.KeyboardEvent<HTMLDivElement>)=>{
     //z and x are not included
     const keypressed:string =e.key;
-      console.log(keypressed)
       setboard(last => {
         let temp_board:Board =JSON.parse(JSON.stringify(last));
         if(last.matrix.length != 0 && last.pointer?.value){//could try deleting ".value" and it could still work
@@ -89,7 +113,6 @@ export default function Page() {
               }
               return obj;
             };
-            //debugger
             let out_matrix:boolean = false;
             for (let i = 1; i < 4; i++) {
               temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
@@ -234,7 +257,7 @@ export default function Page() {
                 return temp_board;
               }
             }
-            if(temp_board.pointer!.index == 7){
+            if(temp_board.pointer!.index == 7){//bar piece
 
               if (temp_board.pointer!.value[0].y+1 == temp_board.pointer!.value[1].y) {//acostada
                 for (let i = 0; i < 4; i++) {
@@ -311,30 +334,7 @@ export default function Page() {
       })
   }
 
-  //this one will happen only once
-  useEffect(()=>{
-    let temp_matrix:number[][]= [];
-    for (let i = 0; i < 20; i++) {
-      temp_matrix.push([]);
-      for (let j = 0; j < 10; j++) {
-        temp_matrix[i][j]=0;
-      }
-    }
-
-    setboard({matrix:temp_matrix,pointer:null});
-    setcounter(last => last + 1);
-  },[]);  
   
-  const increaseSpeed = ():void => {
-      if(speed>125){
-        setspeed(last => last/2);
-      }
-      else{
-        if(buttonref.current){
-          buttonref.current.innerHTML="Too much speed!!";
-        }
-      }
-  }
 
   useEffect( ()=>{//this guy will change the matrix every 'speed' seconds
     // 'X' ARE GOING TO BE THE ROWS AND 'Y' THE COLUMNS (Ik it doesn't make sense but it was the way I saw it)
@@ -407,6 +407,14 @@ export default function Page() {
           }else{//In case there's the need for a new figure
               //random figure selector algorithm
               let index_figure=Math.floor(Math.random()*7+1);
+              const positions = JSON.parse(JSON.stringify(figures.inf[index_figure].positions));
+
+              for(const element of positions){
+                if(temp_board.matrix[element.x][element.y] != 0){
+                  //PLAYER DIED
+                  return {matrix:temp_board.matrix,pointer:{value:positions,index:index_figure}};
+                }
+              }
               for (let i = 0; i < 4; i++) {
                 const x =figures.inf[index_figure].positions[i].x;
                 const y =figures.inf[index_figure].positions[i].y;
@@ -414,10 +422,9 @@ export default function Page() {
                 temp_board.matrix[x][y]=index_figure;
                 
             }
-            const positions = JSON.parse(JSON.stringify(figures.inf[index_figure].positions));
-            //DELETE LATER
-            //setpointer({value:positions,index:index_figure});
-            //setmatrix(temp_matrix);
+            //NEXT: IF THE MATRIX HAS A VALUE DIFFERENT THAN 0 IN THESE POSITIONS, THE PLAYER DIES.
+            
+            
             setcounter(last => last + 1);
             return {matrix:temp_board.matrix,pointer:{value:positions,index:index_figure}};
           }
@@ -432,19 +439,23 @@ export default function Page() {
     },speed);
   },[counter]);
 
+  const retryGame = ()=>{
+    alert("Trying again...")
+  }
 
 
-  return <div tabIndex={0} className="focus:outline-none" onKeyDown={(e)=>{keyeventhandler(e)}}>
-              
-              <h1 className="text-red-600	">Hello, Next.js!</h1>
-              <p>contador: {counter}</p>
-              <p>velocidad: {speed}</p>
-              <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
-              <div className="flex justify-center">
-                 <Boardt matrix={board.matrix} pointer={board.pointer}/>
-              </div>
-              
-         </div>
-    
-  
+
+  return <div tabIndex={0} className="flex flex-col justify-center focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
+    <Menu retryfunc={retryGame}/>
+    <h1 className="text-red-600	">Hello, Next.js!</h1>
+    <p>contador: {counter}</p>
+    <p>velocidad: {speed}</p>
+    <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
+    <div className="flex justify-center">
+      <Boardt matrix={board.matrix} pointer={board.pointer} />
+    </div>
+
+  </div>
+
+
 }
