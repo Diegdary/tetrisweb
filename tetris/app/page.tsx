@@ -453,8 +453,9 @@ export default function Page() {
   const retryGame:()=>void = ()=>{
   
     setboard({matrix:emptyMatrix(),pointer:null});
-    setonMenu(last => false);
-    setcounter(last => last+1);
+    setonMenu(false);
+    setcounter(0);
+    setspeed(1000);
   }
 
 
