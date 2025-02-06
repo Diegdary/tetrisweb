@@ -12,6 +12,8 @@ const config: Config = {
       height:{
         '80vh':"80vh"
       },
+      width:{
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

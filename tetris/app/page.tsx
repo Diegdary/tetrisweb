@@ -10,6 +10,7 @@ export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
   const [board,setboard] = useState<Board>({matrix:[],pointer:null});
+  const [onMenu,setonMenu] = useState<Boolean>(true);
   const buttonref = useRef<HTMLButtonElement>(null);
 
   //this one will happen only once
@@ -412,6 +413,7 @@ export default function Page() {
               for(const element of positions){
                 if(temp_board.matrix[element.x][element.y] != 0){
                   //PLAYER DIED
+                  setonMenu(last => true);
                   return {matrix:temp_board.matrix,pointer:{value:positions,index:index_figure}};
                 }
               }
@@ -439,14 +441,14 @@ export default function Page() {
     },speed);
   },[counter]);
 
-  const retryGame = ()=>{
+  const retryGame:()=>void = ()=>{
     alert("Trying again...")
   }
 
 
 
-  return <div tabIndex={0} className="flex flex-col justify-center focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
-    <Menu retryfunc={retryGame}/>
+  return <div tabIndex={0} className="h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
+    <Menu retryfunc={retryGame} visible={onMenu}/>
     <h1 className="text-red-600	">Hello, Next.js!</h1>
     <p>contador: {counter}</p>
     <p>velocidad: {speed}</p>
