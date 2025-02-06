@@ -10,11 +10,10 @@ export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
   const [board,setboard] = useState<Board>({matrix:[],pointer:null});
-  const [onMenu,setonMenu] = useState<Boolean>(true);
+  const [onMenu,setonMenu] = useState<Boolean>(false);
   const buttonref = useRef<HTMLButtonElement>(null);
 
-  //this one will happen only once
-  useEffect(()=>{
+  const emptyMatrix:()=>number[][] = ()=>{
     let temp_matrix:number[][]= [];
     for (let i = 0; i < 20; i++) {
       temp_matrix.push([]);
@@ -22,6 +21,13 @@ export default function Page() {
         temp_matrix[i][j]=0;
       }
     }
+
+    return temp_matrix;
+  } 
+
+  //this one will happen only once
+  useEffect(()=>{
+    let temp_matrix:number[][]= emptyMatrix();
 
     setboard({matrix:temp_matrix,pointer:null});
     setcounter(last => last + 1);
@@ -41,6 +47,9 @@ export default function Page() {
   const keyeventhandler = (e:React.KeyboardEvent<HTMLDivElement>)=>{
     //z and x are not included
     const keypressed:string =e.key;
+      if (onMenu) {
+        return
+      }
       setboard(last => {
         let temp_board:Board =JSON.parse(JSON.stringify(last));
         if(last.matrix.length != 0 && last.pointer?.value){//could try deleting ".value" and it could still work
@@ -442,7 +451,10 @@ export default function Page() {
   },[counter]);
 
   const retryGame:()=>void = ()=>{
-    alert("Trying again...")
+  
+    setboard({matrix:emptyMatrix(),pointer:null});
+    setonMenu(last => false);
+    setcounter(last => last+1);
   }
 
 
