@@ -1,10 +1,10 @@
 
 export interface Pointer{
     value: {x:number, y:number}[],
-    index: number//{current:number|null,next:number|null}
+    index: {current:number|null,next:number}
 }
 
 export interface Board  {
   matrix : number[][],
-  pointer: Pointer | null
+  pointer: Pointer
 }

@@ -9,7 +9,7 @@ import Menu from "./menu";
 export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
-  const [board,setboard] = useState<Board>({matrix:[],pointer:null});
+  const [board,setboard] = useState<Board>({matrix:[],pointer:{index:{current:null,next:1},value:[]}});
   const [onMenu,setonMenu] = useState<Boolean>(false);
   const buttonref = useRef<HTMLButtonElement>(null);
 
@@ -29,7 +29,7 @@ export default function Page() {
   useEffect(()=>{
     let temp_matrix:number[][]= emptyMatrix();
 
-    setboard({matrix:temp_matrix,pointer:null});
+    setboard({matrix:temp_matrix,pointer:{index:{current:null,next:Math.floor(Math.random()*7+1)},value:[]}});
     setcounter(last => last + 1);
   },[]);  
   
@@ -52,16 +52,15 @@ export default function Page() {
       }
       setboard(last => {
         let temp_board:Board =JSON.parse(JSON.stringify(last));
-        if(last.matrix.length != 0 && last.pointer?.value){//could try deleting ".value" and it could still work
+        if(last.matrix.length != 0 && last.pointer.index.current){//could try deleting ".value" and it could still work
           if(keypressed == "ArrowLeft"){
-            
             let out_matrix:boolean = false;
             for (let i = 0; i < 4; i++) {
-              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
             }
             for (let i = 0; i < 4; i++) {
-              const x = temp_board.pointer!.value[i].x;
-              const y = temp_board.pointer!.value[i].y-1;
+              const x = temp_board.pointer.value[i].x;
+              const y = temp_board.pointer.value[i].y-1;
               if (y == -1 || temp_board.matrix[x][y] != 0) {
                 out_matrix=true;
                 break;
@@ -69,10 +68,10 @@ export default function Page() {
             }
             if(!out_matrix){
               for (let i = 0; i < 4; i++) {
-                temp_board.pointer!.value[i].y= temp_board.pointer!.value[i].y-1;
-                const x = temp_board.pointer!.value[i].x;
-                const y = temp_board.pointer!.value[i].y;
-                temp_board.matrix[x][y]= temp_board.pointer!.index;
+                temp_board.pointer.value[i].y= temp_board.pointer.value[i].y-1;
+                const x = temp_board.pointer.value[i].x;
+                const y = temp_board.pointer.value[i].y;
+                temp_board.matrix[x][y]= temp_board.pointer.index.current!;
               }
               return temp_board;
             }
@@ -80,11 +79,11 @@ export default function Page() {
           if(keypressed == "ArrowRight"){
             let out_matrix:boolean = false;
             for (let i = 0; i < 4; i++) {
-              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
             }
             for (let i = 0; i < 4; i++) {
-              const x = temp_board.pointer!.value[i].x;
-              const y = temp_board.pointer!.value[i].y+1;
+              const x = temp_board.pointer.value[i].x;
+              const y = temp_board.pointer.value[i].y+1;
               if (y == 10 || temp_board.matrix[x][y] != 0) {
                 out_matrix=true;
                 break;
@@ -92,10 +91,10 @@ export default function Page() {
             }
             if(!out_matrix){
               for (let i = 0; i < 4; i++) {
-                temp_board.pointer!.value[i].y= temp_board.pointer!.value[i].y+1;
-                const x = temp_board.pointer!.value[i].x;
-                const y = temp_board.pointer!.value[i].y;
-                temp_board.matrix[x][y]= temp_board.pointer!.index;
+                temp_board.pointer.value[i].y= temp_board.pointer.value[i].y+1;
+                const x = temp_board.pointer.value[i].x;
+                const y = temp_board.pointer.value[i].y;
+                temp_board.matrix[x][y]= temp_board.pointer.index.current!;
               }
               return temp_board;
             }
@@ -103,8 +102,8 @@ export default function Page() {
           // right rotation
           if(keypressed == "x"){
             const getNextPosition = (obj:{x:number,y:number}) => {
-              const middle_x:number = temp_board.pointer!.value[0].x;
-              const middle_y:number = temp_board.pointer!.value[0].y;
+              const middle_x:number = temp_board.pointer.value[0].x;
+              const middle_y:number = temp_board.pointer.value[0].y;
               for (let i = 0; i < 2; i++) {
                 if (obj.x < middle_x && obj.y <= middle_y) {//right
                   obj.y= obj.y+1
@@ -125,13 +124,13 @@ export default function Page() {
             };
             let out_matrix:boolean = false;
             for (let i = 1; i < 4; i++) {
-              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
             }
             //double step rotation pattern case
-            if (temp_board.pointer!.index > 1 && temp_board.pointer!.index < 7) {
+            if (temp_board.pointer.index.current! > 1 && temp_board.pointer.index.current! < 7) {
               for (let i = 1; i < 4; i++) {
-                const x =temp_board.pointer!.value[i].x; 
-                const y =temp_board.pointer!.value[i].y;
+                const x =temp_board.pointer.value[i].x; 
+                const y =temp_board.pointer.value[i].y;
                 const nextP= getNextPosition({x,y});
                 //debugger
                 if ((nextP.x < 0 || nextP.x > 19) || (nextP.y < 0 || nextP.y > 9) || temp_board.matrix[nextP.x][nextP.y] != 0) {
@@ -141,30 +140,30 @@ export default function Page() {
               }
               if (!out_matrix) {
                 for (let i = 1; i < 4; i++) {
-                  const x =temp_board.pointer!.value[i].x; 
-                  const y =temp_board.pointer!.value[i].y;
+                  const x =temp_board.pointer.value[i].x; 
+                  const y =temp_board.pointer.value[i].y;
                   const nextP= getNextPosition({x,y});
-                  temp_board.pointer!.value[i].x=nextP.x
-                  temp_board.pointer!.value[i].y=nextP.y
-                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer!.index
+                  temp_board.pointer.value[i].x=nextP.x
+                  temp_board.pointer.value[i].y=nextP.y
+                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer.index.current!
                   
                 }
                 return temp_board;
               }
             }
-            if(temp_board.pointer!.index == 7){
+            if(temp_board.pointer.index.current == 7){
 
-              if (temp_board.pointer!.value[0].y+1 == temp_board.pointer!.value[1].y) {//acostada
+              if (temp_board.pointer.value[0].y+1 == temp_board.pointer.value[1].y) {//acostada
                 for (let i = 0; i < 4; i++) {
-                  const x = temp_board.pointer!.value[i].x;
-                  const y = temp_board.pointer!.value[i].y;
+                  const x = temp_board.pointer.value[i].x;
+                  const y = temp_board.pointer.value[i].y;
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer!.value[0].x-2;
-                  const limit = temp_board.pointer!.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x-2;
+                  const limit = temp_board.pointer.value[0].x + 2;
                   for (let i = startingP; i < limit; i++) {
-                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer!.value[1].y] != 0){
+                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer.value[1].y] != 0){
                     out_matrix = true
                     break;
                   }
@@ -173,12 +172,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer!.value[0].x-2;
-                  const limit = temp_board.pointer!.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x-2;
+                  const limit = temp_board.pointer.value[0].x + 2;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer!.value[counter].x= i;
-                    temp_board.pointer!.value[counter].y= temp_board.pointer!.value[1].y;
-                    temp_board.matrix[i][temp_board.pointer!.value[1].y] = temp_board.pointer!.index
+                    temp_board.pointer.value[counter].x= i;
+                    temp_board.pointer.value[counter].y= temp_board.pointer.value[1].y;
+                    temp_board.matrix[i][temp_board.pointer.value[1].y] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
@@ -186,15 +185,15 @@ export default function Page() {
               }
               else{//levantada
                 for (let i = 0; i < 4; i++) {
-                  const x = temp_board.pointer!.value[i].x;
-                  const y = temp_board.pointer!.value[i].y;
+                  const x = temp_board.pointer.value[i].x;
+                  const y = temp_board.pointer.value[i].y;
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer!.value[2].y-1;
-                  const limit = temp_board.pointer!.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[2].y-1;
+                  const limit = temp_board.pointer.value[2].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer!.value[2].x][i] != 0){
+                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer.value[2].x][i] != 0){
                     out_matrix = true
                     break;
                   }
@@ -203,12 +202,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer!.value[2].y-1;
-                  const limit = temp_board.pointer!.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[2].y-1;
+                  const limit = temp_board.pointer.value[2].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer!.value[counter].x= temp_board.pointer!.value[2].x;
-                    temp_board.pointer!.value[counter].y= i;
-                    temp_board.matrix[temp_board.pointer!.value[2].x][i] = temp_board.pointer!.index
+                    temp_board.pointer.value[counter].x= temp_board.pointer.value[2].x;
+                    temp_board.pointer.value[counter].y= i;
+                    temp_board.matrix[temp_board.pointer.value[2].x][i] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
@@ -220,8 +219,8 @@ export default function Page() {
 
           if(keypressed == "z"){
             const getNextPosition = (obj:{x:number,y:number}) => {
-              const middle_x:number = temp_board.pointer!.value[0].x;
-              const middle_y:number = temp_board.pointer!.value[0].y;
+              const middle_x:number = temp_board.pointer.value[0].x;
+              const middle_y:number = temp_board.pointer.value[0].y;
               for (let i = 0; i < 2; i++) {
                 if (obj.x > middle_x && obj.y <= middle_y) {//right
                   obj.y= obj.y+1
@@ -242,13 +241,13 @@ export default function Page() {
             };
             let out_matrix:boolean = false;
             for (let i = 1; i < 4; i++) {
-              temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = 0;
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
             }
             //double step rotation pattern case
-            if (temp_board.pointer!.index > 1 && temp_board.pointer!.index < 7) {
+            if (temp_board.pointer.index.current! > 1 && temp_board.pointer.index.current! < 7) {
               for (let i = 1; i < 4; i++) {
-                const x =temp_board.pointer!.value[i].x; 
-                const y =temp_board.pointer!.value[i].y;
+                const x =temp_board.pointer.value[i].x; 
+                const y =temp_board.pointer.value[i].y;
                 const nextP= getNextPosition({x,y});
                 if ((nextP.x < 0 || nextP.x > 19) || (nextP.y < 0 || nextP.y > 9) || temp_board.matrix[nextP.x][nextP.y] != 0) {
                   out_matrix = true;
@@ -256,30 +255,30 @@ export default function Page() {
               }
               if (!out_matrix) {
                 for (let i = 1; i < 4; i++) {
-                  const x =temp_board.pointer!.value[i].x; 
-                  const y =temp_board.pointer!.value[i].y;
+                  const x =temp_board.pointer.value[i].x; 
+                  const y =temp_board.pointer.value[i].y;
                   const nextP= getNextPosition({x,y});
-                  temp_board.pointer!.value[i].x=nextP.x
-                  temp_board.pointer!.value[i].y=nextP.y
-                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer!.index
+                  temp_board.pointer.value[i].x=nextP.x
+                  temp_board.pointer.value[i].y=nextP.y
+                  temp_board.matrix[nextP.x][nextP.y]= temp_board.pointer.index.current!
                   
                 }
                 return temp_board;
               }
             }
-            if(temp_board.pointer!.index == 7){//bar piece
+            if(temp_board.pointer.index.current == 7){//bar piece
 
-              if (temp_board.pointer!.value[0].y+1 == temp_board.pointer!.value[1].y) {//acostada
+              if (temp_board.pointer.value[0].y+1 == temp_board.pointer.value[1].y) {//acostada
                 for (let i = 0; i < 4; i++) {
-                  const x = temp_board.pointer!.value[i].x;
-                  const y = temp_board.pointer!.value[i].y;
+                  const x = temp_board.pointer.value[i].x;
+                  const y = temp_board.pointer.value[i].y;
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer!.value[0].x-2;
-                  const limit = temp_board.pointer!.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x-2;
+                  const limit = temp_board.pointer.value[0].x + 2;
                   for (let i = startingP; i < limit; i++) {
-                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer!.value[1].y] != 0){
+                  if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer.value[1].y] != 0){
                     out_matrix = true
                     break;
                   }
@@ -288,12 +287,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer!.value[0].x-2;
-                  const limit = temp_board.pointer!.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x-2;
+                  const limit = temp_board.pointer.value[0].x + 2;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer!.value[counter].x= i;
-                    temp_board.pointer!.value[counter].y= temp_board.pointer!.value[1].y;
-                    temp_board.matrix[i][temp_board.pointer!.value[1].y] = temp_board.pointer!.index
+                    temp_board.pointer.value[counter].x= i;
+                    temp_board.pointer.value[counter].y= temp_board.pointer.value[1].y;
+                    temp_board.matrix[i][temp_board.pointer.value[1].y] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
@@ -301,15 +300,15 @@ export default function Page() {
               }
               else{//levantada
                 for (let i = 0; i < 4; i++) {
-                  const x = temp_board.pointer!.value[i].x;
-                  const y = temp_board.pointer!.value[i].y;
+                  const x = temp_board.pointer.value[i].x;
+                  const y = temp_board.pointer.value[i].y;
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer!.value[2].y-1;
-                  const limit = temp_board.pointer!.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[2].y-1;
+                  const limit = temp_board.pointer.value[2].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer!.value[2].x][i] != 0){
+                  if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer.value[2].x][i] != 0){
                     out_matrix = true
                     break;
                   }
@@ -318,12 +317,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer!.value[2].y-1;
-                  const limit = temp_board.pointer!.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[2].y-1;
+                  const limit = temp_board.pointer.value[2].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer!.value[counter].x= temp_board.pointer!.value[2].x;
-                    temp_board.pointer!.value[counter].y= i;
-                    temp_board.matrix[temp_board.pointer!.value[2].x][i] = temp_board.pointer!.index
+                    temp_board.pointer.value[counter].x= temp_board.pointer.value[2].x;
+                    temp_board.pointer.value[counter].y= i;
+                    temp_board.matrix[temp_board.pointer.value[2].x][i] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
@@ -334,7 +333,7 @@ export default function Page() {
           }
 
           for (let i = 0; i < 4; i++) {
-            temp_board.matrix[temp_board.pointer!.value[i].x][temp_board.pointer!.value[i].y] = board.pointer!.index;
+            temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = temp_board.pointer.index.current!; //PROBABLY AN ERROR BECAUSE OF temp_board instead of board (idky)
           }
 
         }
@@ -354,7 +353,8 @@ export default function Page() {
 
           let temp_board:Board=JSON.parse(JSON.stringify(lastBoard));
   
-          if(temp_board.pointer?.value){
+          if(temp_board.pointer.index.current){
+            
             let out_matrix:boolean= false;
             //the figure will be empty for a while
             for (let i = 0; i < 4; i++) {
@@ -370,7 +370,7 @@ export default function Page() {
               //update the pointer
               for (let i = 0; i < 4; i++) {
                 temp_board.pointer.value[i].x=temp_board.pointer.value[i].x+1;
-                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index;
+                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index.current!;
               }
 
               setcounter(last => last + 1);
@@ -379,7 +379,7 @@ export default function Page() {
             else{
               let rows_burned =0;
               for (let i = 0; i < 4; i++) {
-                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index;
+                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index.current!;
               }
               //deleting completed rows!
               const sortedlist = temp_board.pointer.value.map(e => e.x).sort();
@@ -408,36 +408,38 @@ export default function Page() {
               }
 
 
-              //restart
+              //(before) restart
                 setcounter(last => last + 1);
-                return {matrix:temp_board.matrix,pointer:null}
+                return {matrix:temp_board.matrix,pointer:{index:{current:null,next:temp_board.pointer.index.next},value:[]}}
               
             }
             
           }else{//In case there's the need for a new figure
               //random figure selector algorithm
               let index_figure=Math.floor(Math.random()*7+1);
-              const positions = JSON.parse(JSON.stringify(figures.inf[index_figure].positions));
+              const next_piece = temp_board.pointer.index.next;
+              const positions = JSON.parse(JSON.stringify(figures.inf[next_piece].positions));
 
               for(const element of positions){
                 if(temp_board.matrix[element.x][element.y] != 0){
                   //PLAYER DIED
-                  setonMenu(last => true);
-                  return {matrix:temp_board.matrix,pointer:{value:positions,index:index_figure}};
+                  setonMenu(true);
+                  return {matrix:temp_board.matrix,pointer:{value:[],index:{current:null,next:1}}};
                 }
               }
               for (let i = 0; i < 4; i++) {
-                const x =figures.inf[index_figure].positions[i].x;
-                const y =figures.inf[index_figure].positions[i].y;
+                const x =figures.inf[next_piece].positions[i].x;
+                const y =figures.inf[next_piece].positions[i].y;
                 
-                temp_board.matrix[x][y]=index_figure;
+                temp_board.matrix[x][y]=next_piece;
                 
             }
             //NEXT: IF THE MATRIX HAS A VALUE DIFFERENT THAN 0 IN THESE POSITIONS, THE PLAYER DIES.
             
             
             setcounter(last => last + 1);
-            return {matrix:temp_board.matrix,pointer:{value:positions,index:index_figure}};
+            
+            return {matrix:temp_board.matrix,pointer:{value:positions,index:{current:next_piece,next:index_figure}}};
           }
           
         }
@@ -452,7 +454,7 @@ export default function Page() {
 
   const retryGame:()=>void = ()=>{
   
-    setboard({matrix:emptyMatrix(),pointer:null});
+    setboard({matrix:emptyMatrix(),pointer:{index:{current:null,next:Math.floor(Math.random()*7+1)},value:[]}});
     setonMenu(false);
     setcounter(0);
     setspeed(1000);
@@ -468,6 +470,7 @@ export default function Page() {
     <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
     <div className="flex justify-center">
       <Boardt matrix={board.matrix} pointer={board.pointer} />
+      <div>Next:{figures.inf[board.pointer.index.next].name}</div>
     </div>
 
   </div>
