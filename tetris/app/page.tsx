@@ -460,7 +460,7 @@ export default function Page() {
 
 
 
-  return <div tabIndex={0} className="h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
+  return <div tabIndex={0} className="bg-costum-background h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
     <Menu retryfunc={retryGame} visible={onMenu}/>
     <h1 className="text-red-600	">Hello, Next.js!</h1>
     <p>contador: {counter}</p>

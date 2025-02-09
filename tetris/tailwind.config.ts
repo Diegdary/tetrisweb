@@ -18,6 +18,7 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "costum-background":"radial-gradient(#ffffff, #cec5df)"
       },
       gridTemplateRows:{
         '20': 'repeat(20, minmax(0, 1fr))'
