@@ -4,6 +4,7 @@ import Boardt from "./boardt";
 import figures from "../public/assets/figures.json";
 import { Board } from "../public/assets/structures";
 import Menu from "./menu";
+import NextPiece from "./nextPiece";
 
 
 export default function Page() {
@@ -469,8 +470,8 @@ export default function Page() {
     <p>velocidad: {speed}</p>
     <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
     <div className="flex justify-center">
-      <Boardt matrix={board.matrix} pointer={board.pointer} />
-      <div>Next:{figures.inf[board.pointer.index.next].name}</div>
+      <Boardt matrix={board.matrix} pointer={board.pointer}/>
+      <NextPiece index={board.pointer.index.next}/>
     </div>
 
   </div>
