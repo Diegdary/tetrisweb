@@ -8,7 +8,6 @@ export default function NextPiece({index}:smallMatrix):JSX.Element{
     const [final_values,setFinal_values] = useState<number[]>([]);
 
     useEffect(()=>{
-        debugger
         if (index) {
             
         }
@@ -33,9 +32,9 @@ export default function NextPiece({index}:smallMatrix):JSX.Element{
     },[index]);
     
     
-    return <div className="text-center">
+    return <div className="text-center ml-4">
         <h2>Next piece:</h2>
-        <div className={`w-36 h-36 grid grid-cols-4 grid-rows-4 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
+        <div className={`rounded-[10px] overflow-hidden w-36 h-36 grid grid-cols-4 grid-rows-4 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
         {final_values.map((value,key) => <div key={key} className={`bg-[${figures.inf[value].color}]`}></div>)}
         </div>
     </div>

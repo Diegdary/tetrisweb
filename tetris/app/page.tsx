@@ -35,7 +35,7 @@ export default function Page() {
   },[]);  
   
   const increaseSpeed = ():void => {
-      if(speed>125){
+      if(speed>100){
         setspeed(last => last/2);
       }
       else{
@@ -464,13 +464,17 @@ export default function Page() {
 
 
   return <div tabIndex={0} className="bg-costum-background h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
-    <Menu retryfunc={retryGame} visible={onMenu}/>
+    
     <h1 className="text-red-600	">Hello, Next.js!</h1>
     <p>contador: {counter}</p>
     <p>velocidad: {speed}</p>
     <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
     <div className="flex justify-center">
-      <Boardt matrix={board.matrix} pointer={board.pointer}/>
+      <div>
+        <Menu retryfunc={retryGame} visible={onMenu}/>
+        <Boardt matrix={board.matrix} pointer={board.pointer}/>
+      </div>
+      
       <NextPiece index={board.pointer.index.next}/>
     </div>
 
