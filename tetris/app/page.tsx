@@ -1,8 +1,8 @@
 "use client";
-import { FC, useEffect, useRef, useState } from "react"
+import {useEffect, useRef, useState } from "react"
 import Boardt from "./boardt";
 import figures from "../public/assets/figures.json";
-import { Board } from "../public/assets/structures";
+import { Board, Score } from "../public/assets/structures";
 import Menu from "./menu";
 import NextPiece from "./nextPiece";
 
@@ -11,6 +11,7 @@ export default function Page() {
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
   const [board,setboard] = useState<Board>({matrix:[],pointer:{index:{current:null,next:1},value:[]}});
+  const [score,setscore] = useState<Score>({level:0,score:0});
   const [onMenu,setonMenu] = useState<Boolean>(false);
   const buttonref = useRef<HTMLButtonElement>(null);
 

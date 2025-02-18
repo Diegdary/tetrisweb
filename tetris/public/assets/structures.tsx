@@ -8,3 +8,8 @@ export interface Board  {
   matrix : number[][],
   pointer: Pointer
 }
+
+export interface Score{
+  level:number,
+  score:number
+}
