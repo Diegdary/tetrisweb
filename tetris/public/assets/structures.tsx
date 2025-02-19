@@ -13,3 +13,7 @@ export interface Score{
   level:number,
   score:number
 }
+
+export interface Levels{
+  [key: number]:string;
+}

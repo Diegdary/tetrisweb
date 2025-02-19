@@ -2,7 +2,7 @@
 import {useEffect, useRef, useState } from "react"
 import Boardt from "./boardt";
 import figures from "../public/assets/figures.json";
-import { Board, Score } from "../public/assets/structures";
+import { Board, Score, Levels } from "../public/assets/structures";
 import Menu from "./menu";
 import NextPiece from "./nextPiece";
 
@@ -102,7 +102,7 @@ export default function Page() {
             }
           }
           // right rotation
-          if(keypressed == "x"){
+          if(keypressed == "x" || keypressed == "X"){
             const getNextPosition = (obj:{x:number,y:number}) => {
               const middle_x:number = temp_board.pointer.value[0].x;
               const middle_y:number = temp_board.pointer.value[0].y;
@@ -219,7 +219,7 @@ export default function Page() {
             
           }
 
-          if(keypressed == "z"){
+          if(keypressed == "z" || keypressed == "Z"){
             const getNextPosition = (obj:{x:number,y:number}) => {
               const middle_x:number = temp_board.pointer.value[0].x;
               const middle_y:number = temp_board.pointer.value[0].y;
@@ -350,6 +350,12 @@ export default function Page() {
   useEffect( ()=>{//this guy will change the matrix every 'speed' seconds
     // 'X' ARE GOING TO BE THE ROWS AND 'Y' THE COLUMNS (Ik it doesn't make sense but it was the way I saw it)
     setTimeout(()=>{
+      const map: Levels = {380:"1",620:"2",1000:"3",1600:"4",2000:"Max"};
+      if (counter in map){
+        const lvl = parseInt(map[counter as keyof Levels]);
+        console.log("level: " + lvl)
+        setscore(last => {return {level:lvl,score:last.score}})
+      }
       setboard(lastBoard => {
         if(board.matrix.length != 0){
 
@@ -411,6 +417,8 @@ export default function Page() {
 
 
               //(before) restart
+
+                setscore(last => {return {level:last.level,score: last.score +(4*rows_burned*(0.25*last.level+0.75))}});
                 setcounter(last => last + 1);
                 return {matrix:temp_board.matrix,pointer:{index:{current:null,next:temp_board.pointer.index.next},value:[]}}
               
@@ -460,16 +468,17 @@ export default function Page() {
     setonMenu(false);
     setcounter(0);
     setspeed(1000);
+    setscore({level:0,score:0});
   }
 
 
 
   return <div tabIndex={0} className="bg-costum-background h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
     
-    <h1 className="text-red-600	">Hello, Next.js!</h1>
     <p>contador: {counter}</p>
     <p>velocidad: {speed}</p>
     <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
+    <div className="text-center">Level: {score.level}  Score:{score.score}</div>
     <div className="flex justify-center">
       <div>
         <Menu retryfunc={retryGame} visible={onMenu}/>
