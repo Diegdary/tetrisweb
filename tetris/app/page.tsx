@@ -8,12 +8,31 @@ import NextPiece from "./nextPiece";
 
 
 export default function Page() {
+  const [timer,settimer] = useState<number>(0);
   const [counter,setcounter]= useState<number>(0);
   const [speed,setspeed]= useState<number>(1000);
   const [board,setboard] = useState<Board>({matrix:[],pointer:{index:{current:null,next:1},value:[]}});
   const [score,setscore] = useState<Score>({level:0,score:0});
   const [onMenu,setonMenu] = useState<Boolean>(false);
   const buttonref = useRef<HTMLButtonElement>(null);
+
+  const timeConverter = (seconds:number)=>{
+    let minutes:number|string = Math.floor(seconds/60);
+    let remainingSeconds:number|string = seconds - minutes*60;
+    minutes = minutes<10?`0${minutes}`:minutes;
+    remainingSeconds= remainingSeconds<10?`0${remainingSeconds}`:remainingSeconds;
+    return `${minutes}:${remainingSeconds}`;
+  }
+
+  useEffect(()=>{
+    const intervl = setTimeout(()=>{
+      if (!onMenu) {
+        settimer(last => last+1);
+      }
+    },1000)
+    
+  },[onMenu,timer]);
+
 
   const emptyMatrix:()=>number[][] = ()=>{
     let temp_matrix:number[][]= [];
@@ -40,9 +59,7 @@ export default function Page() {
         setspeed(last => last/2);
       }
       else{
-        if(buttonref.current){
-          buttonref.current.innerHTML="Too much speed!!";
-        }
+          buttonref.current!.innerHTML="Too much speed!!";
       }
   }
 
@@ -345,17 +362,31 @@ export default function Page() {
       })
   }
 
+  const levelup = (_counter:number):void=>{
+      const map: Levels = {380:"1",620:"2",1000:"3",1600:"4",2000:"5"};
+      if (_counter in map){
+        let lvl = parseInt(map[_counter as keyof Levels]);
+        setscore(last => {
+          lvl = Math.max(lvl, last.level);
+          return {
+          level:lvl,score:last.score}}
+        )
+        increaseSpeed();
+      }
+  } 
+
+  const selfLevelup = ()=>{
+      setscore(last => {
+        const newlvl = last.level <5 ? last.level+1 : last.level;
+        return {level:newlvl,score:last.score}})
+      increaseSpeed();
+} 
   
 
   useEffect( ()=>{//this guy will change the matrix every 'speed' seconds
     // 'X' ARE GOING TO BE THE ROWS AND 'Y' THE COLUMNS (Ik it doesn't make sense but it was the way I saw it)
     setTimeout(()=>{
-      const map: Levels = {380:"1",620:"2",1000:"3",1600:"4",2000:"Max"};
-      if (counter in map){
-        const lvl = parseInt(map[counter as keyof Levels]);
-        console.log("level: " + lvl)
-        setscore(last => {return {level:lvl,score:last.score}})
-      }
+      levelup(counter);
       setboard(lastBoard => {
         if(board.matrix.length != 0){
 
@@ -418,7 +449,7 @@ export default function Page() {
 
               //(before) restart
 
-                setscore(last => {return {level:last.level,score: last.score +(4*rows_burned*(0.25*last.level+0.75))}});
+                setscore(last => {return {level:last.level,score: last.score +Math.floor(Math.pow((4*rows_burned*(0.25*last.level+0.75)),1.5))}});
                 setcounter(last => last + 1);
                 return {matrix:temp_board.matrix,pointer:{index:{current:null,next:temp_board.pointer.index.next},value:[]}}
               
@@ -469,6 +500,8 @@ export default function Page() {
     setcounter(0);
     setspeed(1000);
     setscore({level:0,score:0});
+    settimer(0);
+    buttonref.current!.innerHTML="Increase speed";
   }
 
 
@@ -477,15 +510,21 @@ export default function Page() {
     
     <p>contador: {counter}</p>
     <p>velocidad: {speed}</p>
-    <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={increaseSpeed}>Increase speed</button>
-    <div className="text-center">Level: {score.level}  Score:{score.score}</div>
-    <div className="flex justify-center">
+    <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={selfLevelup}>Increase speed</button>
+    <div className="text-center">Level: {score.level}</div>
+    <div id="main content" className="flex justify-center">
       <div>
-        <Menu retryfunc={retryGame} visible={onMenu}/>
+        timer:{timeConverter(timer)}
+      </div>
+      <div>
+        <Menu retryfunc={retryGame} visible={onMenu} score={score.score}/>
         <Boardt matrix={board.matrix} pointer={board.pointer}/>
       </div>
+      <div>
+        <NextPiece index={board.pointer.index.next}/>
+        <div className="text-center">Score:{score.score}</div>
+      </div>
       
-      <NextPiece index={board.pointer.index.next}/>
     </div>
 
   </div>
