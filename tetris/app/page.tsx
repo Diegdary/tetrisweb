@@ -280,8 +280,8 @@ export default function Page() {
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer.value[0].x-2;
-                  const limit = temp_board.pointer.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x;
+                  const limit = temp_board.pointer.value[0].x + 4;
                   for (let i = startingP; i < limit; i++) {
                   if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer.value[1].y] != 0){
                     out_matrix = true
@@ -292,8 +292,8 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer.value[0].x-2;
-                  const limit = temp_board.pointer.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x;
+                  const limit = temp_board.pointer.value[0].x + 4;
                   for (let i = startingP; i < limit; i++) {
                     temp_board.pointer.value[counter].x= i;
                     temp_board.pointer.value[counter].y= temp_board.pointer.value[1].y;
@@ -310,8 +310,8 @@ export default function Page() {
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer.value[2].y-1;
-                  const limit = temp_board.pointer.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[0].y-1;
+                  const limit = temp_board.pointer.value[0].y + 3;
                   for (let i = startingP; i < limit; i++) {
                   if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer.value[2].x][i] != 0){
                     out_matrix = true
@@ -322,12 +322,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer.value[2].y-1;
-                  const limit = temp_board.pointer.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[0].y-1;
+                  const limit = temp_board.pointer.value[0].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer.value[counter].x= temp_board.pointer.value[2].x;
+                    temp_board.pointer.value[counter].x= temp_board.pointer.value[0].x;
                     temp_board.pointer.value[counter].y= i;
-                    temp_board.matrix[temp_board.pointer.value[2].x][i] = temp_board.pointer.index.current
+                    temp_board.matrix[temp_board.pointer.value[0].x][i] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
@@ -386,8 +386,7 @@ export default function Page() {
                 return temp_board;
               }
             }
-            if(temp_board.pointer.index.current == 7){//bar piece
-
+            if(temp_board.pointer.index.current == 7){
               if (temp_board.pointer.value[0].y+1 == temp_board.pointer.value[1].y) {//acostada
                 for (let i = 0; i < 4; i++) {
                   const x = temp_board.pointer.value[i].x;
@@ -395,8 +394,8 @@ export default function Page() {
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer.value[0].x-2;
-                  const limit = temp_board.pointer.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x;
+                  const limit = temp_board.pointer.value[0].x + 4;
                   for (let i = startingP; i < limit; i++) {
                   if ((i < 0 || i > 19) || temp_board.matrix[i][temp_board.pointer.value[1].y] != 0){
                     out_matrix = true
@@ -407,8 +406,8 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer.value[0].x-2;
-                  const limit = temp_board.pointer.value[0].x + 2;
+                  const startingP = temp_board.pointer.value[0].x;
+                  const limit = temp_board.pointer.value[0].x + 4;
                   for (let i = startingP; i < limit; i++) {
                     temp_board.pointer.value[counter].x= i;
                     temp_board.pointer.value[counter].y= temp_board.pointer.value[1].y;
@@ -425,8 +424,8 @@ export default function Page() {
                   temp_board.matrix[x][y] = 0;
                 }
                 let out_matrix = false;
-                  const startingP = temp_board.pointer.value[2].y-1;
-                  const limit = temp_board.pointer.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[0].y-1;
+                  const limit = temp_board.pointer.value[0].y + 3;
                   for (let i = startingP; i < limit; i++) {
                   if ((i < 0 || i > 9) || temp_board.matrix[temp_board.pointer.value[2].x][i] != 0){
                     out_matrix = true
@@ -437,12 +436,12 @@ export default function Page() {
                 if (!out_matrix) {
                   let counter = 0;
                   
-                  const startingP = temp_board.pointer.value[2].y-1;
-                  const limit = temp_board.pointer.value[2].y + 3;
+                  const startingP = temp_board.pointer.value[0].y-1;
+                  const limit = temp_board.pointer.value[0].y + 3;
                   for (let i = startingP; i < limit; i++) {
-                    temp_board.pointer.value[counter].x= temp_board.pointer.value[2].x;
+                    temp_board.pointer.value[counter].x= temp_board.pointer.value[0].x;
                     temp_board.pointer.value[counter].y= i;
-                    temp_board.matrix[temp_board.pointer.value[2].x][i] = temp_board.pointer.index.current
+                    temp_board.matrix[temp_board.pointer.value[0].x][i] = temp_board.pointer.index.current
                     counter++;
                   }
                   return temp_board;
