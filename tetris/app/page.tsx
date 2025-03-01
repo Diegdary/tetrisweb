@@ -64,6 +64,7 @@ export default function Page() {
   }
 
   const keyeventhandler = (e:React.KeyboardEvent<HTMLDivElement>)=>{
+    console.log(e.key)
     //z and x are not included
     const keypressed:string =e.key;
       if (onMenu) {
@@ -118,6 +119,106 @@ export default function Page() {
               return temp_board;
             }
           }
+          if(keypressed == "ArrowDown"){
+            let out_matrix:boolean = false;
+            for (let i = 0; i < 4; i++) {
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
+            }
+            for (let i = 0; i < 4; i++) {
+              const x = temp_board.pointer.value[i].x+1;
+              const y = temp_board.pointer.value[i].y;
+              if (x == 20 || temp_board.matrix[x][y] != 0) {
+                out_matrix=true;
+                break;
+              }
+            }
+            if(!out_matrix){
+              for (let i = 0; i < 4; i++) {
+                temp_board.pointer.value[i].x += 1;
+                const x = temp_board.pointer.value[i].x;
+                const y = temp_board.pointer.value[i].y;
+                temp_board.matrix[x][y]= temp_board.pointer.index.current!;
+              }
+              return temp_board;
+            }
+          }
+          if(keypressed == " "){
+            let out_matrix:boolean = false;
+            let linesLooped = 0;
+            for (let i = 0; i < 4; i++) {
+              temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y] = 0;
+            }
+            while(!out_matrix){
+              for (let i = 0; i < 4; i++) {
+                const x = temp_board.pointer.value[i].x+linesLooped+1;
+                const y = temp_board.pointer.value[i].y;
+                if (x == 20 || temp_board.matrix[x][y] != 0) {
+                  out_matrix=true;
+                  break;
+                }
+              }
+              linesLooped++;
+            }
+            for (let i = 0; i < 4; i++) {
+              temp_board.pointer.value[i].x += linesLooped - 1;
+              const x = temp_board.pointer.value[i].x;
+              const y = temp_board.pointer.value[i].y;
+              temp_board.matrix[x][y]= temp_board.pointer.index.current!;
+            }
+            //deleting burnrows
+            let rows_burned =0;
+              for (let i = 0; i < 4; i++) {
+                temp_board.matrix[temp_board.pointer.value[i].x][temp_board.pointer.value[i].y]=temp_board.pointer.index.current!;
+              }
+              //deleting completed rows!
+              const sortedlist = temp_board.pointer.value.map(e => e.x).sort();
+              const setlist = new Set(sortedlist);
+
+              for (const row of setlist) {
+                let gap:boolean = false;
+                for (let j = 0; j < 10; j++) {
+                  if (temp_board.matrix[row][j] == 0) {
+                    gap= true;
+                    break;
+                  }
+                }
+                if (!gap) {
+                  rows_burned++;
+                  for (let temp_i = row; temp_i > 0; temp_i--) {
+                    for (let temp_j = 0; temp_j < 10; temp_j++) {
+                      temp_board.matrix[temp_i][temp_j] = temp_board.matrix[temp_i - 1][temp_j];
+                    }
+                  }
+                  // filling first row (the row is not always going to be empty)
+                  for (let temp_i = 0; temp_i < 10; temp_i++) {
+                    temp_board.matrix[0][temp_i] = 0;
+                  }
+                }
+              }
+
+            //starting point!
+            let index_figure=Math.floor(Math.random()*7+1);
+              const next_piece = temp_board.pointer.index.next;
+              const positions = JSON.parse(JSON.stringify(figures.inf[next_piece].positions));
+
+              for(const element of positions){
+                if(temp_board.matrix[element.x][element.y] != 0){
+                  //PLAYER DIED
+                  setonMenu(true);
+                  return {matrix:temp_board.matrix,pointer:{value:[],index:{current:null,next:1}}};
+                }
+              }
+              for (let i = 0; i < 4; i++) {
+                const x =figures.inf[next_piece].positions[i].x;
+                const y =figures.inf[next_piece].positions[i].y;
+                
+                temp_board.matrix[x][y]=next_piece;
+                
+            }
+            //NEXT: IF THE MATRIX HAS A VALUE DIFFERENT THAN 0 IN THESE POSITIONS, THE PLAYER DIES.
+            setscore(last => {return {level:last.level,score: last.score +Math.floor(Math.pow((4*rows_burned*(0.25*last.level+0.75)),1.5))}});
+            return {matrix:temp_board.matrix,pointer:{value:positions,index:{current:next_piece,next:index_figure}}};
+          }
           // right rotation
           if(keypressed == "x" || keypressed == "X"){
             const getNextPosition = (obj:{x:number,y:number}) => {
@@ -151,7 +252,7 @@ export default function Page() {
                 const x =temp_board.pointer.value[i].x; 
                 const y =temp_board.pointer.value[i].y;
                 const nextP= getNextPosition({x,y});
-                //debugger
+
                 if ((nextP.x < 0 || nextP.x > 19) || (nextP.y < 0 || nextP.y > 9) || temp_board.matrix[nextP.x][nextP.y] != 0) {
                   out_matrix = true;
                   break;
@@ -439,7 +540,7 @@ export default function Page() {
                       temp_board.matrix[temp_i][temp_j] = temp_board.matrix[temp_i - 1][temp_j];
                     }
                   }
-                  // filling first row 
+                  // filling first row (the row is not always going to be empty)
                   for (let temp_i = 0; temp_i < 10; temp_i++) {
                     temp_board.matrix[0][temp_i] = 0;
                   }
