@@ -18,19 +18,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout 🛎️
+      - name: Checkout Repository 🛎️
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ⚙️ - Cache dependencies ⚡ - Install dependencies 🔧
-        uses: ./.github/workflows/setup-node
-
-      - name: Setup Pages ⚙️
-        uses: actions/configure-pages@v4
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v3
         with:
-          static_site_generator: next
+          node-version: 18
+          cache: "npm"
 
-      - name: Build with Next.js 🏗️
+      - name: Install Dependencies 🔧
+        run: npm install
+
+      - name: Build Next.js 🏗️
         run: npm run build
+
+      - name: Check if "out/" exists 📂
+        run: |
+          if [ ! -d "out" ]; then
+            echo "Error: 'out/' folder does not exist!"
+            exit 1
+          fi
 
       - name: Upload artifact 📡
         uses: actions/upload-pages-artifact@v3
