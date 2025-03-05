@@ -2,6 +2,7 @@
 const nextConfig = {
     output:"export",
     basePath:"/tetrisweb",
+    trailingSlash: true,
 };
 
 export default nextConfig;
