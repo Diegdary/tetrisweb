@@ -25,7 +25,7 @@ export default function Page() {
   }
 
   useEffect(()=>{
-    const intervl = setTimeout(()=>{
+    setTimeout(()=>{
       if (!onMenu) {
         settimer(last => last+1);
       }
@@ -64,7 +64,6 @@ export default function Page() {
   }
 
   const keyeventhandler = (e:React.KeyboardEvent<HTMLDivElement>)=>{
-    console.log(e.key)
     //z and x are not included
     const keypressed:string =e.key;
       if (onMenu) {
@@ -607,7 +606,11 @@ export default function Page() {
 
 
   return <div tabIndex={0} className="bg-costum-background h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
-    
+    <button onClick={()=>{
+      alert(`Use the arrows to move the pieces to the sides and down. You can press the spacebar to drop the pieces instantly. Feel free to use the 'Increase Speed' button if you get bored!`)
+    }} className="m-6 h-9 w-28 text-white absolute right-0 bottom-0 bg-[#6857b6] border-solid border-2 border-[#5a49a6] rounded-lg">
+      Controls ℹ
+    </button>
     <div id="main content" className="flex justify-center">
       <div className="mt-16 mr-4 font-semibold">
         timer:{timeConverter(timer)}
