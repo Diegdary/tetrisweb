@@ -2,9 +2,10 @@ import figures from "./../public/assets/figures.json"
 import { useState,useEffect } from "react";
 
 interface smallMatrix{
-    index:number
+    index:number,
+    score:number
 }
-export default function NextPiece({index}:smallMatrix):JSX.Element{
+export default function NextPiece({index,score}:smallMatrix):JSX.Element{
     const [final_values,setFinal_values] = useState<number[]>([]);
 
     useEffect(()=>{
@@ -33,10 +34,11 @@ export default function NextPiece({index}:smallMatrix):JSX.Element{
     
     
     return <div className="text-center ml-4">
-        <h2>Next piece:</h2>
+        <h2 className="font-semibold">Next piece:</h2>
         <div className={`rounded-[10px] overflow-hidden w-36 h-36 grid grid-cols-4 grid-rows-4 divide-x-2 divide-y-2 divide-slate-500 bg-slate-400`}>
         {final_values.map((value,key) => <div key={key} className={`bg-[${figures.inf[value].color}]`}></div>)}
         </div>
+        <h2 className="font-semibold">Score: {score}</h2>
     </div>
 }
 //DO NOT DELETE

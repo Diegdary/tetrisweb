@@ -608,25 +608,20 @@ export default function Page() {
 
   return <div tabIndex={0} className="bg-costum-background h-screen w-screen relative flex flex-col justify-start focus:outline-none" onKeyDown={(e) => { keyeventhandler(e) }}>
     
-    <p>contador: {counter}</p>
-    <p>velocidad: {speed}</p>
-    <button className="border-solid border-2 border-indigo-600 " id="123" ref={buttonref} onClick={selfLevelup}>Increase speed</button>
-    <div className="text-center">Level: {score.level}</div>
     <div id="main content" className="flex justify-center">
-      <div>
+      <div className="mt-16 mr-4 font-semibold">
         timer:{timeConverter(timer)}
       </div>
-      <div>
+      <div className="mt-3">
+        <button className="w-96 h-7 bg-[#6857b6] border-solid border-2 border-[#5a49a6] rounded-lg text-white  font-semibold" id="123" ref={buttonref} onClick={selfLevelup}>Increase speed</button>
+        <div className="h-7 text-center  font-semibold">Level: {score.level}</div>
         <Menu retryfunc={retryGame} visible={onMenu} score={score.score}/>
         <Boardt matrix={board.matrix} pointer={board.pointer}/>
       </div>
-      <div>
-        <NextPiece index={board.pointer.index.next}/>
-        <div className="text-center">Score:{score.score}</div>
+      <div className="mt-16">
+        <NextPiece index={board.pointer.index.next} score={score.score}/>
       </div>
-      
     </div>
-
   </div>
 
 
