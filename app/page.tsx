@@ -617,7 +617,7 @@ export default function Page() {
       </div>
       <div className="mt-3">
         <button className="w-96 h-7 bg-[#6857b6] border-solid border-2 border-[#5a49a6] rounded-lg text-white  font-semibold" id="123" ref={buttonref} onClick={selfLevelup}>Increase speed</button>
-        <div className="h-7 text-center  font-semibold">Current level: {score.level}</div>
+        <div className="h-7 text-center  font-semibold">Currentt level: {score.level}</div>
         <Menu retryfunc={retryGame} visible={onMenu} score={score.score}/>
         <Boardt matrix={board.matrix} pointer={board.pointer}/>
       </div>
