@@ -462,7 +462,7 @@ export default function Page() {
   }
 
   const levelup = (_counter:number):void=>{
-      const map: Levels = {380:"1",620:"2",1000:"3",1600:"4",2000:"5"};
+      const map: Levels = {50:"1",100:"2",200:"3",400:"4",700:"5"};
       if (_counter in map){
         let lvl = parseInt(map[_counter as keyof Levels]);
         setscore(last => {
